@@ -1,6 +1,6 @@
 [project]
 name = "epub-convert"
-version = "0.1.1"
+version = "0.2.0"
 description = "Convert EPUB files between Simplified Chinese and Traditional Chinese."
 readme = "README.md"
 requires-python = ">=3.7"

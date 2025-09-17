@@ -1,6 +1,7 @@
 import zipfile
 import opencc
 from pathlib import Path
+from commonFunc import findTargetFileList, mkdir, chkdir
 
 # only initailize OpenCC once, or it would be very slow
 converter = opencc.OpenCC(config="t2s")
@@ -46,35 +47,47 @@ def main():
     import time
     from io import BytesIO
 
+    # initialize the list
+    fn_list = []
+
     parser = argparse.ArgumentParser(description="Convert traditional chinese to simplified chinese in epub.")
     parser.add_argument('file', nargs='+', help="epub files")
     args = parser.parse_args()
 
-    if len(args.file) == 1 and "*" in args.file[0]:
-        fn_list = glob.glob(args.file[0])
+    if (chkdir(args.file[0])):
+        print(f"Scan all .epub file under the folder {args.file}")
+        ls_DataType = [".epub"]
+        for idx in range(len(args.file)):
+            tmpList = findTargetFileList(ls_DataType, args.file[idx])
+            fn_list.extend(tmpList)
     else:
-        fn_list = args.file
+        if len(args.file) == 1 and "*" in args.file[0]:
+            fn_list = glob.glob(args.file[0])
+        else:
+            fn_list = args.file
 
     for fn in fn_list:
         path = Path(fn)
-        directory = path.parent.absolute()
+        directory = path.parent.absolute().joinpath("Converted-sc")
+        mkdir(str(directory))
         filename = path.name
 
         if not path.suffix == ".epub":
             print(f"Skipping file {fn}, which is not an epub document.")
             continue
-        elif filename == t2s(filename):
-            output_fn = fn[:-5] + '-sc.epub'
         else:
-            output_fn = t2s(filename)
+            filename  = filename[:-5] + '-sc.epub'
 
         t = time.time()
         print(f"Converting {fn}")
         buffer = BytesIO()
         output = convert_epub(fn, buffer)
-        with open(Path.joinpath(directory, output_fn), "wb") as f:
+
+        outputPath = directory.joinpath(directory, filename)
+        with open(outputPath, "wb") as f:
             f.write(buffer.getvalue())
-        print(f"File {fn} is successfully converted. Time elapsed: {round(time.time() - t, 2)}s")
+        print(f"File [{fn}] is successfully converted. Time elapsed: {round(time.time() - t, 2)}s")
+        print(f"Converted file location:[{output_fn}]\n\n")
 
 
 if __name__ == "__main__":
