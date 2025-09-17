@@ -1,7 +1,7 @@
 import zipfile
 import opencc
 from pathlib import Path
-from .commonFunc import findTargetFileList, mkdir, chkdir
+from ._libs._commonFunc import findTargetFileList, mkdir, chkdir
 
 # only initailize OpenCC once, or it would be very slow
 converter = opencc.OpenCC(config="t2s")
