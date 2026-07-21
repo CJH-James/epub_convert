@@ -16,7 +16,7 @@ def convert_epub(epub, output=None):
         extension = Path(fn).suffix[1:] # remove heading `.`
         if extension in target_filetype:
             # if file extension is targeted file type
-            sc_content = origin.read(fn)
+            sc_content = origin.read(fn).decode("utf-8")
             tc_content = convert_content(sc_content)
             if extension == "opf":
                 tc_content = tc_content.replace("<dc:language>zh-TW</dc:language>", "<dc:language>zh-CN</dc:language>")

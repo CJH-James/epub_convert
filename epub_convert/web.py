@@ -4,7 +4,7 @@ from io import BytesIO
 from flask import (
     Flask, jsonify, request, render_template, send_file, url_for
 )
-from convert import convert_epub, s2t
+from epub_convert.s2t import convert_epub, s2t
 from pathlib import Path
 
 app = Flask(__name__)
